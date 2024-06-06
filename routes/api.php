@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LeadController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/auth', [AuthController::class, 'login']);
 
-Route::resource('leads', LeadController::class);
+Route::middleware('auth.jwt')->group(function () {
+    Route::post('/lead', [LeadController::class, 'store']);
+    Route::get('/lead/{id}', [LeadController::class, 'show']);
+    Route::get('/leads', [LeadController::class, 'index']);
+});

@@ -14,6 +14,7 @@ class LeadResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        info($request);
         return [
             'id' => $this->id,
             'name' => $this->name,

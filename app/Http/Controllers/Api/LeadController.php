@@ -2,41 +2,41 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\LeadException;
-use App\Helpers\Constant;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Requests\UpdateLeadRequest;
 use App\Http\Resources\LeadResource;
+use App\Services\LeadService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class LeadController extends Controller
 {
+
+    protected $leadService;
+
+    public function __construct(LeadService $leadService)
+    {
+        $this->middleware('auth.jwt'); //es necsario aqui o en la ruta
+        $this->leadService = $leadService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         try {
-            $leads = Lead::all();
-            //$leads = [];
-
-            if ($leads->isEmpty()) {
-                throw new LeadException('No leads found.', Response::HTTP_NOT_FOUND);
-            }
-            return LeadResource::collection($leads)->additional([
+            $result = $this->leadService->getAllLeads();
+            return LeadResource::collection($result['data'])->additional([
                 'meta' => [
-                    'success' => true,
-                    'status' => Response::HTTP_OK,
-                    //'message' => Constant::CONST_RESOURCE_SUCCESSFULLY_RETRIEVED,
-                    'errors' => [],
+                    'success' => $result['success'],
+                    'status' => $result['status'],
+                    'errors' => $result['success'] ? [] : []
                 ],
             ]);
-        } catch (LeadException $e) {
-            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'data' => [],
@@ -54,13 +54,13 @@ class LeadController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        $lead = Lead::create($request->all());
-        return LeadResource::collection($lead)->additional([
+        $result = $this->leadService->createLead($request->all());
+
+        return (new LeadResource($result['data']))->additional([
             'meta' => [
-                'success' => true,
-                'status' => Response::HTTP_CREATED,
-                //'message' => Constant::CONST_RESOURCE_SUCCESSFULLY_CREATED,
-                'errors' => [],
+                'success' => $result['success'],
+                'status' => $result['status'],
+                'errors' => $result['success'] ? [] : [$result['message']],
             ],
         ]);
     }
@@ -68,14 +68,16 @@ class LeadController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Lead $lead)
+    public function show($id)
     {
-        return (new LeadResource($lead))->additional([
+
+        $result = $this->leadService->getLeadById($id);
+
+        return (new LeadResource($result['data']))->additional([
             'meta' => [
-                'success' => true,
-                'status' => Response::HTTP_OK,
-                //'message' => Constant::CONST_RESOURCE_SUCCESSFULLY_CREATED,
-                'errors' => [],
+                'success' => $result['success'],
+                'status' => $result['status'],
+                'errors' => $result['success'] ? [] : [$result['message']],
             ],
         ]);;
     }

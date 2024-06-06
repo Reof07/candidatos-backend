@@ -25,7 +25,6 @@ class StoreLeadRequest extends FormRequest
             'name' => 'required|string|max:255',
             'source' => 'required|string|max:255',
             'owner' => 'required|exists:users,id',
-            'created_by' => 'required|exists:users,id'
         ];
     }
 }
