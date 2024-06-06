@@ -11,7 +11,7 @@ class StoreLeadRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreLeadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'source' => 'required|string|max:255',
+            'owner' => 'required|exists:users,id',
+            'created_by' => 'required|exists:users,id'
         ];
     }
 }
