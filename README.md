@@ -24,8 +24,8 @@ Este proyecto es una API RESTful construida con Laravel que gestiona candidatos.
 ### Paso 1: Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/tu-repositorio.git
-cd tu-repositorio
+https://github.com/Reof07/candidatos-backend.git
+cd candidatos-backend.git
 ```
 
 ### Paso 2: Paso 2: Instalar Dependencias
