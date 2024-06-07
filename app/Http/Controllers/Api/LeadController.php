@@ -18,7 +18,6 @@ class LeadController extends Controller
 
     public function __construct(LeadService $leadService)
     {
-        $this->middleware('auth.jwt'); //es necsario aqui o en la ruta
         $this->leadService = $leadService;
     }
 
