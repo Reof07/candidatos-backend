@@ -50,7 +50,7 @@ cp .env.example .env
 ### Paso 4: Generar la Clave de la Aplicación
 
 ```bash
-php artisan key:generate
+php artisan jwt:secret
 ```
 
 ### Paso 5: Migrar y correr seeders
@@ -62,6 +62,7 @@ php artisan migrate --seed
 ### Paso 6: Ejecutar el servidor
 
 ```bash
+php artisan optimize
 php artisan serve
 ```
 
