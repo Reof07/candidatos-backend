@@ -30,12 +30,8 @@ class LeadService
             throw new LeadException('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
 
-        $lead = Lead::create([
-            'name' => $data['name'],
-            'source' => $data['source'],
-            'owner' => $data['owner'],
-            'created_by' => Auth::id()
-        ]);
+        $leadData = array_merge($data, ['created_by' => Auth::id()]);
+        $lead = $this->leadRepository->create($leadData);
 
         return [
             'success' => true,
@@ -53,7 +49,7 @@ class LeadService
     {
         $lead = $this->leadRepository->findOne($id);
         if (!$lead) {
-            throw new LeadException('No lead found', Response::HTTP_NO_CONTENT);
+            throw new LeadException('No lead found', Response::HTTP_NOT_FOUND);
         }
 
         if (Auth::user()->role == 'agent' && $lead->owner != Auth::id()) {
@@ -80,7 +76,7 @@ class LeadService
         }
 
         if ($leads->isEmpty()) {
-            throw new LeadException('No leads found.', Response::HTTP_NO_CONTENT);
+            throw new LeadException('No leads found.', Response::HTTP_NOT_FOUND);
         }
 
         return [
