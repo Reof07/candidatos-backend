@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Exceptions\LeadException;
-use App\Helpers\Constant;
-use App\Models\Lead;
 use App\Repositories\LeadRepository;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;

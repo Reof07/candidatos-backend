@@ -52,6 +52,10 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    /**
+     * @description: relationship between user and leads
+     * @return: HasMany
+     */
     public function leads(): HasMany
     {
         return $this->hasMany(Lead::class, 'owner');

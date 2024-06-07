@@ -21,7 +21,6 @@ class LeadController extends Controller
         $this->leadService = $leadService;
     }
 
-
     /**
      * Display a listing of the resource.
      */
@@ -44,7 +43,7 @@ class LeadController extends Controller
                     'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                     'errors' => [$e->getMessage()],
                 ],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ]);
         }
     }
 
@@ -53,15 +52,26 @@ class LeadController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        $result = $this->leadService->createLead($request->all());
+        try {
+            $result = $this->leadService->createLead($request->all());
 
-        return (new LeadResource($result['data']))->additional([
-            'meta' => [
-                'success' => $result['success'],
-                'status' => $result['status'],
-                'errors' => $result['success'] ? [] : [$result['message']],
-            ],
-        ]);
+            return (new LeadResource($result['data']))->additional([
+                'meta' => [
+                    'success' => $result['success'],
+                    'status' => $result['status'],
+                    'errors' => $result['success'] ? [] : [$result['message']],
+                ],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'data' => [],
+                'meta' => [
+                    'success' => false,
+                    'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                    'errors' => [$e->getMessage()],
+                ],
+            ]);
+        }
     }
 
     /**
